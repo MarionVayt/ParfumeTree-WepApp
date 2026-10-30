@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParfumTree.Domain", "ParfumTree.Domain\ParfumTree.Domain.csproj", "{D05AB702-CF41-4CB0-924B-2A42F26E3348}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParfumTree.Application", "ParfumTree.Application\ParfumTree.Application.csproj", "{F1A8639C-8431-413B-A2C3-EB3D02F493E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParfumTree.Infrastructure", "ParfumTree.Infrastructure\ParfumTree.Infrastructure.csproj", "{DCD40F30-1C7F-4AA2-8983-08D7E196798E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParfumTree.WebApi", "ParfumTree.WebApi\ParfumTree.WebApi.csproj", "{FB73749D-792A-43D0-95C1-D3E14996D9E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D05AB702-CF41-4CB0-924B-2A42F26E3348}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D05AB702-CF41-4CB0-924B-2A42F26E3348}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D05AB702-CF41-4CB0-924B-2A42F26E3348}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D05AB702-CF41-4CB0-924B-2A42F26E3348}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1A8639C-8431-413B-A2C3-EB3D02F493E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1A8639C-8431-413B-A2C3-EB3D02F493E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1A8639C-8431-413B-A2C3-EB3D02F493E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1A8639C-8431-413B-A2C3-EB3D02F493E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCD40F30-1C7F-4AA2-8983-08D7E196798E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCD40F30-1C7F-4AA2-8983-08D7E196798E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCD40F30-1C7F-4AA2-8983-08D7E196798E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCD40F30-1C7F-4AA2-8983-08D7E196798E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB73749D-792A-43D0-95C1-D3E14996D9E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB73749D-792A-43D0-95C1-D3E14996D9E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB73749D-792A-43D0-95C1-D3E14996D9E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB73749D-792A-43D0-95C1-D3E14996D9E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
