@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ParfumTree.Infrastructure.Data;
+using ParfumTree.Application.Interfaces;
+using ParfumTree.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ParfumTreeDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IProductService, ProductService>();
 
 var app = builder.Build();
 

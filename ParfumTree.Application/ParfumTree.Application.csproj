@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ParfumTree.Domain\ParfumTree.Domain.csproj" />
+      <ProjectReference Include="..\ParfumTree.Infrastructure\ParfumTree.Infrastructure.csproj" />
     </ItemGroup>
 
 </Project>
