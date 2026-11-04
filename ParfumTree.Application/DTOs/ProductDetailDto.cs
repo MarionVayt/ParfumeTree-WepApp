@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ParfumTree.Application.DTOs;
 
 public class ProductDetailDto
