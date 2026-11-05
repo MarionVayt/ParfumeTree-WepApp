@@ -24,6 +24,8 @@ builder.Services.AddDbContext<ParfumTreeDbContext>(options =>
 
 builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddScoped<IProductVariantService, ProductVariantService>();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

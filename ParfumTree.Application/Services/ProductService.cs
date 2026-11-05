@@ -53,7 +53,7 @@ public class ProductService : IProductService
                 {
                     Id = v.Id,
                     VolumeMl = v.VolumeMl,
-                    Concentration = v.ConcentrationType.ToString(),
+                    Concentration = v.Concentration.ToString(),
                     Price = v.Price,
                     OldPrice = v.OldPrice,
                     StockQuantity = v.StockQuantity,

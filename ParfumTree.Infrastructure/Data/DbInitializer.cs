@@ -41,7 +41,6 @@ public static class DbInitializer
 
         await context.Brands.AddRangeAsync(tomFord, mfk);
 
-        // 4. Створюємо Ноти
         var noteTobacco = new FragranceNote { Name = "Листя тютюну" };
         var noteVanilla = new FragranceNote { Name = "Ваніль" };
         var noteWood = new FragranceNote { Name = "Деревні ноти" };
@@ -50,10 +49,8 @@ public static class DbInitializer
 
         await context.FragranceNotes.AddRangeAsync(noteTobacco, noteVanilla, noteWood, noteSaffron, noteAmber);
 
-        // Зберігаємо первинні довідники, щоб EF Core згенерував для них Id
         await context.SaveChangesAsync();
 
-        // 5. Створюємо Товар 1: Tom Ford Tobacco Vanille
         var tobaccoVanille = new Product
         {
             Name = "Tobacco Vanille",
@@ -64,7 +61,6 @@ public static class DbInitializer
             CategoryId = nicheCategory.Id
         };
 
-        // 6. Створюємо Товар 2: Baccarat Rouge 540
         var baccarat = new Product
         {
             Name = "Baccarat Rouge 540",
@@ -77,8 +73,7 @@ public static class DbInitializer
 
         await context.Products.AddRangeAsync(tobaccoVanille, baccarat);
         await context.SaveChangesAsync();
-
-        // 7. Додаємо Піраміду нот для Tobacco Vanille
+        
         var tobaccoNotes = new List<ProductNote>
         {
             new() { ProductId = tobaccoVanille.Id, NoteId = noteTobacco.Id, NoteType = NoteType.Top },
@@ -86,14 +81,13 @@ public static class DbInitializer
             new() { ProductId = tobaccoVanille.Id, NoteId = noteWood.Id, NoteType = NoteType.Base }
         };
 
-        // 8. Додаємо Варіанти об'ємів (ProductVariants)
         var tobaccoVariants = new List<ProductVariant>
         {
             new()
             {
                 ProductId = tobaccoVanille.Id,
                 VolumeMl = 50,
-                ConcentrationType = ConcentrationType.EauDeParfum,
+                Concentration = ConcentrationType.EauDeParfum,
                 Price = 4800.00m,
                 OldPrice = 5200.00m,
                 StockQuantity = 12,
@@ -104,7 +98,7 @@ public static class DbInitializer
             {
                 ProductId = tobaccoVanille.Id,
                 VolumeMl = 100,
-                ConcentrationType = ConcentrationType.EauDeParfum,
+                Concentration = ConcentrationType.EauDeParfum,
                 Price = 7500.00m,
                 StockQuantity = 5,
                 SKU = "TF-TV-100EDP",
@@ -115,7 +109,6 @@ public static class DbInitializer
         await context.ProductNotes.AddRangeAsync(tobaccoNotes);
         await context.ProductVariants.AddRangeAsync(tobaccoVariants);
 
-        // Фінальне збереження всіх зв'язків
         await context.SaveChangesAsync();
     }
 }
