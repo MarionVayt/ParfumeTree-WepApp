@@ -1,4 +1,6 @@
 using System;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ParfumTree.Application.Interfaces;
 using ParfumTree.Application.Services;
+using ParfumTree.Application.Validators;
 using ParfumTree.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +28,10 @@ builder.Services.AddDbContext<ParfumTreeDbContext>(options =>
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IProductVariantService, ProductVariantService>();
+
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDtoValidator>();
 
 var app = builder.Build();
 

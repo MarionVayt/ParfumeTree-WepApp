@@ -11,4 +11,8 @@
       <ProjectReference Include="..\ParfumTree.Infrastructure\ParfumTree.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
+    </ItemGroup>
+
 </Project>
