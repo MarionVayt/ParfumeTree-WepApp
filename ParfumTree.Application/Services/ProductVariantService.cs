@@ -3,6 +3,7 @@ using ParfumTree.Application.DTOs;
 using ParfumTree.Application.Interfaces;
 using ParfumTree.Domain.Entities;
 using ParfumTree.Domain.Enums;
+using ParfumTree.Domain.Exceptions;
 using ParfumTree.Infrastructure.Data;
 
 namespace ParfumTree.Application.Services;
@@ -64,10 +65,13 @@ public class ProductVariantService : IProductVariantService
         };
     }
 
-    public async Task<bool> UpdateAsync(int variantId, UpdateProductVariantDto dto)
+    public async Task UpdateAsync(int variantId, UpdateProductVariantDto dto)
     {
         var variant = await _context.ProductVariants.FirstOrDefaultAsync(v => v.Id == variantId);
-        if (variant == null) return false;
+        if (variant == null)
+        {
+            throw new NotFoundException($"Product with ID {variantId} was not found.");
+        }
 
         Enum.TryParse<ConcentrationType>(dto.Concentration, true, out var concentration);
 
@@ -78,16 +82,18 @@ public class ProductVariantService : IProductVariantService
         variant.StockQuantity = dto.StockQuantity;
 
         await _context.SaveChangesAsync();
-        return true;
     }
 
-    public async Task<bool> DeleteAsync(int variantId)
+    public async Task DeleteAsync(int variantId)
     {
         var variant = await _context.ProductVariants.FirstOrDefaultAsync(v => v.Id == variantId);
-        if (variant == null) return false;
+        if (variant == null)
+        {
+            throw new NotFoundException($"Product with ID {variantId} was not found.");
+        }
 
         _context.ProductVariants.Remove(variant);
         await _context.SaveChangesAsync();
-        return true;
+
     }
 }

@@ -11,6 +11,7 @@ using ParfumTree.Application.Interfaces;
 using ParfumTree.Application.Services;
 using ParfumTree.Application.Validators;
 using ParfumTree.Infrastructure.Data;
+using ParfumTree.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +34,12 @@ builder.Services.AddFluentValidationAutoValidation();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDtoValidator>();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 using (var scope = app.Services.CreateScope())
 {

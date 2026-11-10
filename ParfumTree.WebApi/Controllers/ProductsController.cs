@@ -46,26 +46,14 @@ public class ProductsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateProductDto dto)
     {
-        var isUpdated = await _productService.UpdateAsync(id, dto);
-
-        if (!isUpdated)
-        {
-            return NotFound();
-        }
-
+        await _productService.UpdateAsync(id, dto);
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var isDeleted = await _productService.DeleteAsync(id);
-
-        if (!isDeleted)
-        {
-            return NotFound();
-        }
-
+        await _productService.DeleteAsync(id);
         return NoContent();
     }
 

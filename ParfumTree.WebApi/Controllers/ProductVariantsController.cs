@@ -36,20 +36,14 @@ public class ProductVariantsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateProductVariantDto dto)
     {
-        var isUpdated = await _variantService.UpdateAsync(id, dto);
-        if (!isUpdated)
-        {
-            return NotFound();
-        }
+        await _variantService.UpdateAsync(id, dto);
         return NoContent();
     }
     
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var isDeleted = await _variantService.DeleteAsync(id);
-        if (!isDeleted) return NotFound();
-
+        await _variantService.DeleteAsync(id);
         return NoContent();
     }
 }

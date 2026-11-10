@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ParfumTree.Application.DTOs;
 using ParfumTree.Application.Interfaces;
 using ParfumTree.Domain.Entities;
+using ParfumTree.Domain.Exceptions;
 using ParfumTree.Infrastructure.Data;
 
 namespace ParfumTree.Application.Services;
@@ -88,33 +89,30 @@ public class ProductService : IProductService
         return createdProduct!;
     }
 
-    public async Task<bool> UpdateAsync(int id, UpdateProductDto dto)
+    public async Task UpdateAsync(int id, UpdateProductDto dto)
     {
         var product = await _context.Products.FindAsync(id);
         if (product == null)
         {
-            return false; 
+            throw new NotFoundException($"Product with ID {id} was not found.");
         }
         product.Name = dto.Name;
         product.Description = dto.Description;
         product.Gender = dto.Gender;
         
         await _context.SaveChangesAsync();
-        return true;
-        
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-
+        var product = await _context.Products.FindAsync(id);
+        
         if (product == null)
         {
-            return false;
+            throw new NotFoundException($"Product with ID {id} was not found.");
         }
 
         _context.Products.Remove(product);
         await _context.SaveChangesAsync();
-        return true;
     }
 }

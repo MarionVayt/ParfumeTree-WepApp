@@ -7,6 +7,6 @@ public interface IProductVariantService
     Task<IEnumerable<ProductVariantDto>> GetVariantsByProductIdAsync(int productId);
 
     Task<ProductVariantDto?> CreateAsync(int productId, CreateProductVariantDto dto);
-    Task<bool> UpdateAsync(int variantId, UpdateProductVariantDto dto);
-    Task<bool> DeleteAsync(int variantId);
+    Task UpdateAsync(int variantId, UpdateProductVariantDto dto);
+    Task DeleteAsync(int variantId);
 }
