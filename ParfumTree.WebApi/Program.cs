@@ -34,6 +34,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateProductDtoValidator>(
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+builder.Services.AddScoped<ICartService, CartService>();
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
