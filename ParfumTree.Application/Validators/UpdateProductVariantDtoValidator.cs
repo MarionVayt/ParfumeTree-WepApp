@@ -30,5 +30,8 @@ public class UpdateProductVariantDtoValidator : AbstractValidator<UpdateProductV
 
         RuleFor(x => x.StockQuantity)
             .GreaterThanOrEqualTo(0).WithMessage("Кількість на складі не може бути від'ємною.");
+        
+        RuleFor(x => x.SKU)
+            .NotEmpty().WithMessage("Артикул (SKU) є обов'язковим.");
     }
 }

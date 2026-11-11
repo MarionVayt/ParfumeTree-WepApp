@@ -11,5 +11,4 @@ public class ProductVariantDto
     public decimal? OldPrice { get; set; }
     public int StockQuantity { get; set; }
     public string SKU { get; set; } = string.Empty;
-    public bool IsTester { get; set; }
 }

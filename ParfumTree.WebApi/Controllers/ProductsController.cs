@@ -18,10 +18,10 @@ public class ProductsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ProductListDto>>> GetAll()
+    public async Task<ActionResult<PagedResponse<ProductListDto>>> GetProducts([FromQuery] ProductQueryParameters parameters)
     {
-        var products = await _productService.GetAllProductsAsync();
-        return Ok(products);
+        var pagedProducts = await _productService.GetProductsAsync(parameters);
+        return Ok(pagedProducts);
     }
 
     [HttpGet("{id:int}")]

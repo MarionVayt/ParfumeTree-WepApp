@@ -19,22 +19,63 @@ public class ProductService : IProductService
         _context = context;
     }
 
-    public async Task<IEnumerable<ProductListDto>> GetAllProductsAsync()
+    public async Task<PagedResponse<ProductListDto>> GetProductsAsync(ProductQueryParameters parameters)
+{
+    var query = _context.Products
+        .AsNoTracking()
+        .AsQueryable();
+    
+    if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
     {
-        return await _context.Products
-            .AsNoTracking()
-            .Select(p => new ProductListDto
-            {
-                Id = p.Id,
-                Name = p.Name,
-                BrandName = p.Brand.Name,
-                CategoryName = p.Category.Name,
-                Gender = p.Gender,
-                MinPrice = p.Variants.Any() ? p.Variants.Min(v => v.Price) : 0,
-                IsInStock = p.Variants.Any(v => v.StockQuantity > 0)
-            })
-            .ToListAsync();
+        var searchTerm = parameters.SearchTerm.ToLower();
+        query = query.Where(p => 
+            p.Name.ToLower().Contains(searchTerm) || 
+            (p.Description != null && p.Description.ToLower().Contains(searchTerm)));
     }
+
+    if (parameters.BrandId.HasValue)
+        query = query.Where(p => p.BrandId == parameters.BrandId.Value);
+
+    if (parameters.CategoryId.HasValue)
+        query = query.Where(p => p.CategoryId == parameters.CategoryId.Value);
+
+    if (!string.IsNullOrWhiteSpace(parameters.Gender))
+        query = query.Where(p => p.Gender.ToLower() == parameters.Gender.ToLower());
+
+    if (parameters.InStockOnly == true)
+        query = query.Where(p => p.Variants.Any(v => v.StockQuantity > 0));
+    
+    if (parameters.MinPrice.HasValue)
+        query = query.Where(p => p.Variants.Any() && p.Variants.Min(v => v.Price) >= parameters.MinPrice.Value);
+
+    if (parameters.MaxPrice.HasValue)
+        query = query.Where(p => p.Variants.Any() && p.Variants.Min(v => v.Price) <= parameters.MaxPrice.Value);
+    
+    var totalCount = await query.CountAsync();
+    
+    var items = await query
+        .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+        .Take(parameters.PageSize)
+        .Select(p => new ProductListDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            BrandName = p.Brand.Name,
+            CategoryName = p.Category.Name,
+            Gender = p.Gender,
+            MinPrice = p.Variants.Any() ? p.Variants.Min(v => v.Price) : 0,
+            IsInStock = p.Variants.Any(v => v.StockQuantity > 0)
+        })
+        .ToListAsync();
+
+    return new PagedResponse<ProductListDto>
+    {
+        Items = items,
+        TotalCount = totalCount,
+        PageNumber = parameters.PageNumber,
+        PageSize = parameters.PageSize
+    };
+}
 
     public async Task<ProductDetailDto?> GetProductByIdAsync(int id)
     {
@@ -59,7 +100,6 @@ public class ProductService : IProductService
                     OldPrice = v.OldPrice,
                     StockQuantity = v.StockQuantity,
                     SKU = v.SKU,
-                    IsTester = v.IsTester
                 }).ToList(),
                 Notes = p.ProductNotes.Select(pn => new ProductNoteDto
                 {
@@ -86,7 +126,7 @@ public class ProductService : IProductService
         await _context.SaveChangesAsync();
         
         var createdProduct = await GetProductByIdAsync(product.Id);
-        return createdProduct!;
+        return createdProduct ?? throw new InvalidOperationException($"Не вдалося завантажити створений продукт з ID {product.Id} з бази даних.");
     }
 
     public async Task UpdateAsync(int id, UpdateProductDto dto)

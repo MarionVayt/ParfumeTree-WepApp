@@ -23,9 +23,6 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ParfumTreeDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDbContext<ParfumTreeDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<IProductVariantService, ProductVariantService>();

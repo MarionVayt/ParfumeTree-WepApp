@@ -91,8 +91,6 @@ public static class DbInitializer
                 Price = 4800.00m,
                 OldPrice = 5200.00m,
                 StockQuantity = 12,
-                SKU = "TF-TV-50EDP",
-                IsTester = false
             },
             new()
             {
@@ -102,7 +100,6 @@ public static class DbInitializer
                 Price = 7500.00m,
                 StockQuantity = 5,
                 SKU = "TF-TV-100EDP",
-                IsTester = false
             }
         };
 

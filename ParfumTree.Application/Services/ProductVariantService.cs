@@ -29,7 +29,8 @@ public class ProductVariantService : IProductVariantService
                 Concentration = v.Concentration.ToString(),
                 Price = v.Price,
                 OldPrice = v.OldPrice,
-                StockQuantity = v.StockQuantity
+                StockQuantity = v.StockQuantity,
+                SKU = v.SKU
             })
             .ToListAsync();
     }
@@ -39,7 +40,15 @@ public class ProductVariantService : IProductVariantService
         var productExists = await _context.Products.AnyAsync(p => p.Id == productId);
         if (!productExists) return null;
 
-        Enum.TryParse<ConcentrationType>(dto.Concentration, true, out var concentration);
+        var concentration = dto.Concentration.ToUpper() switch
+        {
+            "EDP" => ConcentrationType.EauDeParfum,
+            "EDT" => ConcentrationType.EauDeToilette,
+            "EDC" => ConcentrationType.EauDeCologne,
+            "PARFUM" => ConcentrationType.Parfum,
+            "EXTRAIT" => ConcentrationType.ExtraitDeParfum,
+            _ => throw new ArgumentException("Некоректна концентрація")
+        };
 
         var variant = new ProductVariant
         {
@@ -48,7 +57,8 @@ public class ProductVariantService : IProductVariantService
             Concentration = concentration,
             Price = dto.Price,
             OldPrice = dto.OldPrice,
-            StockQuantity = dto.StockQuantity
+            StockQuantity = dto.StockQuantity,
+            SKU = dto.SKU
         };
 
         _context.ProductVariants.Add(variant);
@@ -61,7 +71,8 @@ public class ProductVariantService : IProductVariantService
             Concentration = variant.Concentration.ToString(),
             Price = variant.Price,
             OldPrice = variant.OldPrice,
-            StockQuantity = variant.StockQuantity
+            StockQuantity = variant.StockQuantity,
+            SKU = dto.SKU
         };
     }
 
@@ -80,6 +91,7 @@ public class ProductVariantService : IProductVariantService
         variant.Price = dto.Price;
         variant.OldPrice = dto.OldPrice;
         variant.StockQuantity = dto.StockQuantity;
+        variant.SKU = dto.SKU;
 
         await _context.SaveChangesAsync();
     }

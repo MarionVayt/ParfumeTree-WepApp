@@ -3,7 +3,8 @@ namespace ParfumTree.Domain.Enums;
 public enum ConcentrationType
 {
     EauDeParfum, 
-    EauDeToilette, 
+    EauDeToilette,
+    EauDeCologne,
     Parfum, 
     ExtraitDeParfum
 }
