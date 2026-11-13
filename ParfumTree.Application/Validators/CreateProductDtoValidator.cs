@@ -27,5 +27,9 @@ public class CreateProductDtoValidator : AbstractValidator<CreateProductDto>
             .NotEmpty().WithMessage("Гендер парфуму є обов'язковим.")
             .Must(g => AllowedGenders.Contains(g))
             .WithMessage("Некоректна стать. Дозволені значення: Male, Female, Unisex.");
+        
+        RuleFor(x => x.ReleaseYear)
+            .InclusiveBetween(1700, DateTime.UtcNow.Year + 1)
+            .WithMessage($"Рік випуску має бути в межах від 1700 до {DateTime.UtcNow.Year + 1}.");
     }
 }

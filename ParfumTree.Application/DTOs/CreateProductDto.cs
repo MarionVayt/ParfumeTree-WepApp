@@ -7,4 +7,5 @@ public class CreateProductDto
     public int BrandId { get; set; }
     public int CategoryId { get; set; }
     public string Gender { get; set; } = string.Empty;
+    public int ReleaseYear { get; set; }
 }

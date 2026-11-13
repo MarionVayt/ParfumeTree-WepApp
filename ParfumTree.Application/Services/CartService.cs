@@ -38,21 +38,30 @@ public class CartService : ICartService
                 }).ToList()
             })
             .FirstOrDefaultAsync();
-        
-        return cart ??  new CartDto
+
+        return cart ?? new CartDto
         {
             UserId = userId,
             Items = new List<CartItemDto>()
         };
     }
 
-    public Task<CartDto> AddItemAsync(int userId, AddToCartDto dto)
+    public async Task<CartDto> AddItemAsync(int userId, AddToCartDto dto)
     {
-        throw new NotImplementedException();
-    }
+        if (dto.Quantity <= 0)
+        {
+            throw new ArgumentException("Кількість товару повинна бути більшою за 0.");
+        }
 
-    public async Task<CartDto> AddItemToCartAsync(int userId, AddToCartDto dto)
-    {
+        var variant = await _context.ProductVariants
+            .AsNoTracking()
+            .FirstOrDefaultAsync(v => v.Id == dto.ProductVariantId);
+
+        if (variant == null)
+        {
+            throw new NotFoundException($"Варіант товару з ID {dto.ProductVariantId} не знайдено.");
+        }
+
         var cart = await _context.Carts
             .Include(x => x.CartItems)
             .FirstOrDefaultAsync(x => x.UserId == userId);
@@ -62,13 +71,22 @@ public class CartService : ICartService
             cart = new Cart { UserId = userId };
             _context.Carts.Add(cart);
         }
-        
+
         var existingItem = cart.CartItems
             .FirstOrDefault(x => x.ProductVariantId == dto.ProductVariantId);
 
+        var currentQuantity = existingItem?.Quantity ?? 0;
+        var totalRequestedQuantity = currentQuantity + dto.Quantity;
+
+        if (totalRequestedQuantity > variant.StockQuantity)
+        {
+            throw new ArgumentException(
+                $"Недостатньо товару на складі. Доступно: {variant.StockQuantity} шт. (у кошику вже {currentQuantity} шт.).");
+        }
+
         if (existingItem != null)
         {
-            existingItem.Quantity += dto.Quantity;
+            existingItem.Quantity = totalRequestedQuantity;
         }
         else
         {
@@ -78,7 +96,7 @@ public class CartService : ICartService
                 Quantity = dto.Quantity
             });
         }
-        
+
         await _context.SaveChangesAsync();
         return await GetCartByUserIdAsync(userId);
     }
@@ -89,26 +107,33 @@ public class CartService : ICartService
         {
             throw new ArgumentException("Кількість товару повинна бути більшою за 0.");
         }
-        
-        var cart = await  _context.Carts
+
+        var cart = await _context.Carts
             .Include(x => x.CartItems)
+                .ThenInclude(ci => ci.ProductVariant)
             .FirstOrDefaultAsync(x => x.UserId == userId);
-        
+
         if (cart == null)
         {
             throw new NotFoundException($"Кошик для користувача з ID {userId} не знайдено.");
         }
-        
+
         var existingItem = cart.CartItems
             .FirstOrDefault(x => x.ProductVariantId == productVariantId);
-        
+
         if (existingItem == null)
         {
             throw new NotFoundException($"Товар з ID {productVariantId} відсутній у кошику.");
         }
-        
+
+        if (quantity > existingItem.ProductVariant.StockQuantity)
+        {
+            throw new ArgumentException(
+                $"Недостатньо товару на складі. Доступно: {existingItem.ProductVariant.StockQuantity} шт.");
+        }
+
         existingItem.Quantity = quantity;
-        
+
         await _context.SaveChangesAsync();
         return await GetCartByUserIdAsync(userId);
     }
@@ -123,22 +148,22 @@ public class CartService : ICartService
         {
             throw new NotFoundException($"Кошик для користувача з ID {userId} не знайдено.");
         }
-    
+
         var existingItem = cart.CartItems
             .FirstOrDefault(x => x.ProductVariantId == productVariantId);
-    
+
         if (existingItem == null)
         {
             throw new NotFoundException($"Товар з ID {productVariantId} відсутній у кошику.");
         }
 
-        _context.CartItems.Remove(existingItem); 
+        _context.CartItems.Remove(existingItem);
         await _context.SaveChangesAsync();
     }
 
     public async Task ClearCartAsync(int userId)
     {
-        var cart = await  _context.Carts
+        var cart = await _context.Carts
             .Include(x => x.CartItems)
             .FirstOrDefaultAsync(x => x.UserId == userId);
 
@@ -146,8 +171,8 @@ public class CartService : ICartService
         {
             throw new NotFoundException($"Кошик для користувача з ID {userId} не знайдено.");
         }
-        
+
         _context.CartItems.RemoveRange(cart.CartItems);
-        await _context.SaveChangesAsync();  
+        await _context.SaveChangesAsync();
     }
 }

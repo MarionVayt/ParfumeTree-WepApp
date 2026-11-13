@@ -43,7 +43,6 @@ public class AuthService : IAuthService
             return Fail("Помилка при створенні користувача.", result.Errors.Select(e => e.Description));
         }
 
-        // Звичайний користувач завжди отримує роль User. Адмін створюється лише сидингом.
         var roleResult = await _userManager.AddToRoleAsync(user, AppRoles.User);
         if (!roleResult.Succeeded)
         {

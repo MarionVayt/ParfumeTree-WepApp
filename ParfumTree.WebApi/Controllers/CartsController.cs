@@ -6,7 +6,6 @@ using ParfumTree.WebApi.Extensions;
 
 namespace ParfumTree.WebApi.Controllers;
 
-// Кошик завжди належить користувачеві з токена — userId з URL більше не приймаємо.
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]

@@ -84,7 +84,15 @@ public class ProductVariantService : IProductVariantService
             throw new NotFoundException($"Product with ID {variantId} was not found.");
         }
 
-        Enum.TryParse<ConcentrationType>(dto.Concentration, true, out var concentration);
+        var concentration = dto.Concentration.ToUpper() switch
+        {
+            "EDP" => ConcentrationType.EauDeParfum,
+            "EDT" => ConcentrationType.EauDeToilette,
+            "EDC" => ConcentrationType.EauDeCologne,
+            "PARFUM" => ConcentrationType.Parfum,
+            "EXTRAIT" => ConcentrationType.ExtraitDeParfum,
+            _ => throw new ArgumentException("Некоректна концентрація")
+        };
 
         variant.VolumeMl = dto.VolumeMl;
         variant.Concentration = concentration;
@@ -101,7 +109,7 @@ public class ProductVariantService : IProductVariantService
         var variant = await _context.ProductVariants.FirstOrDefaultAsync(v => v.Id == variantId);
         if (variant == null)
         {
-            throw new NotFoundException($"Product with ID {variantId} was not found.");
+            throw new NotFoundException($"Product variant with ID {variantId} was not found.");
         }
 
         _context.ProductVariants.Remove(variant);

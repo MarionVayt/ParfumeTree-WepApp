@@ -53,6 +53,26 @@ public class ProductService : IProductService
     
     var totalCount = await query.CountAsync();
     
+    query = parameters.SortBy?.ToLower() switch
+    {
+        "price_asc" => query
+            .OrderBy(p => p.Variants.Min(v => (decimal?)v.Price) ?? decimal.MaxValue)
+            .ThenBy(p => p.Id),
+        "price_desc" => query
+            .OrderByDescending(p => p.Variants.Min(v => (decimal?)v.Price) ?? 0m)
+            .ThenBy(p => p.Id),
+        "name_asc" => query
+            .OrderBy(p => p.Name)
+            .ThenBy(p => p.Id),
+        "name_desc" => query
+            .OrderByDescending(p => p.Name)
+            .ThenBy(p => p.Id),
+        "newest" => query
+            .OrderByDescending(p => p.ReleaseYear)
+            .ThenByDescending(p => p.Id),
+        _ => query.OrderBy(p => p.Id)
+    };
+    
     var items = await query
         .Skip((parameters.PageNumber - 1) * parameters.PageSize)
         .Take(parameters.PageSize)
@@ -120,7 +140,8 @@ public class ProductService : IProductService
             Description = dto.Description,
             BrandId = dto.BrandId,
             CategoryId = dto.CategoryId,
-            Gender = dto.Gender
+            Gender = dto.Gender,
+            ReleaseYear = dto.ReleaseYear,
         };
         _context.Products.Add(product);
         await _context.SaveChangesAsync();
@@ -139,6 +160,7 @@ public class ProductService : IProductService
         product.Name = dto.Name;
         product.Description = dto.Description;
         product.Gender = dto.Gender;
+        product.ReleaseYear = dto.ReleaseYear;
         
         await _context.SaveChangesAsync();
     }
