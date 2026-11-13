@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ParfumTree.Application.DTOs;
 using ParfumTree.Application.Interfaces;
+using ParfumTree.Domain.Common;
 
 namespace ParfumTree.WebApi.Controllers;
 
@@ -30,11 +30,12 @@ public class ProductsController : ControllerBase
         var product = await _productService.GetProductByIdAsync(id);
         if (product == null)
         {
-            return NotFound(new  { message = "Product not found." });
+            return NotFound(new { message = "Product not found." });
         }
         return Ok(product);
     }
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPost]
     public async Task<ActionResult<ProductDetailDto>> Create([FromBody] CreateProductDto dto)
     {
@@ -42,7 +43,8 @@ public class ProductsController : ControllerBase
 
         return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
     }
-    
+
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] UpdateProductDto dto)
     {
@@ -50,11 +52,11 @@ public class ProductsController : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = AppRoles.Admin)]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
         await _productService.DeleteAsync(id);
         return NoContent();
     }
-
 }

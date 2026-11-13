@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using ParfumTree.Domain.Entities;
 
 namespace ParfumTree.Infrastructure.Data;
 
-public class ParfumTreeDbContext : DbContext
+public class ParfumTreeDbContext : IdentityDbContext<ApplicationUser, IdentityRole<int>, int>
 {
     public ParfumTreeDbContext(DbContextOptions<ParfumTreeDbContext> options) 
         : base(options)
